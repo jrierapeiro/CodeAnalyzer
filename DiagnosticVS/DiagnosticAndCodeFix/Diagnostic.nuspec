@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AncestryDiagnosticAndCodeFix</id>
+    <version>1.0.0.0</version>
+    <title>Ancestry. Custom diagnostics and codefixes</title>
+    <authors>Javier Riera</authors>
+    <owners>Ancestry</owners>
+    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+    <projectUrl>https://bitbucket.org/jrierapeiro/codeanalyzer</projectUrl>
+    <iconUrl>http://c.mfcreative.com/i/logo/ancestry.svg</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Custom diagnostics and codefixes</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright</copyright>
+    <tags>Diagnostic CodeFix Roslyn</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" targetFramework="" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="*.dll" target="tools\analyzers\" exclude="**\Microsoft.CodeAnalysis.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*" />
+    <file src="tools\*.ps1" target="tools\" />
+  </files>
+</package>

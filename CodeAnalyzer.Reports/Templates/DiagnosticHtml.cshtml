@@ -1,0 +1,90 @@
+﻿@using System
+@model CodeAnalyzer.Reports.Models.DiagnosticReportModel
+
+
+<html>
+<head>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+    <title>
+        Diagnostics for @Model.ProjectName
+    </title>
+</head>
+<body>
+<div class="page-header">
+    <h1>
+        Diagnostics for @Model.ProjectName
+    </h1>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <ul>
+                @foreach (var project in Model.Projects)
+                {
+                    if (project.ReferencesReport.IsEmpty)
+                    {
+                        if (project.Diagnostics.Any())
+                        {
+                            <li>
+                                @project.Project.AssemblyName
+                                <ul>
+                                    <li>
+                                        <a href="@String.Format("{0}_Diagnostics.html", project.Project.AssemblyName)" style="margin-left: 10px">Diagnostics</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="@String.Format("{0}_Report.html", project.Project.AssemblyName)">@project.Project.AssemblyName</a>
+                            @if (project.Diagnostics.Any())
+                            {
+                                <ul>
+                                    <li>
+                                        <a href="@String.Format("{0}_Diagnostics.html", project.Project.AssemblyName)" style="margin-left: 10px">Diagnostics</a>
+                                    </li>
+                                </ul>
+                            }
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="col-md-9">
+            @{ var diagnosticsByType = Model.Diagnostics.GroupBy(d => d.Id); }
+            @foreach (var diagnosticType in diagnosticsByType)
+            {
+                <fieldset>
+                    <legend>
+                        @diagnosticType.Key
+                    </legend>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Info</th>
+                            <th>Warning Level</th>
+                            <th>Severity Level</th>
+                            <th>Location (Character at, on line) </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var diagnostic in diagnosticType)
+                        {
+                            <tr>
+                                <td>@diagnostic.ToString()</td>
+                                <td>@diagnostic.WarningLevel.ToString()</td>
+                                <td>@diagnostic.Severity.ToString()</td>
+                                <td>@String.Format("{0} ({1}, {2})", diagnostic.Location.Kind, diagnostic.Location.GetLineSpan().StartLinePosition.Character, diagnostic.Location.GetLineSpan().StartLinePosition.Line)</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </fieldset>
+            }
+        </div>
+    </div>
+</div>
+</body>
+</html>

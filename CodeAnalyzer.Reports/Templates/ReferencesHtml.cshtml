@@ -1,0 +1,124 @@
+﻿@using System
+@using System.Linq
+@using CodeAnalyzer.Core.Models
+@model CodeAnalyzer.Reports.Models.ReferencesReportModel
+
+
+<html>
+<head>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+    <title>
+        @Model.NamespaceModel.Name
+    </title>
+</head>
+<body>
+<div class="page-header">
+    <h1>
+        Diagnostics for @Model.NamespaceModel.Name
+    </h1>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <ul>
+                @foreach (var project in Model.Projects)
+                {
+                    if (project.ReferencesReport.IsEmpty)
+                    {
+                        if (project.Diagnostics.Any())
+                        {
+                            <li>
+                                @project.Project.AssemblyName
+                                <ul>
+                                    <li>
+                                        <a href="@String.Format("{0}_Diagnostics.html", project.Project.AssemblyName)" style="margin-left: 10px">Diagnostics</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="@String.Format("{0}_Report.html", project.Project.AssemblyName)">@project.Project.AssemblyName</a>
+                            @if (project.Diagnostics.Any())
+                            {
+                                <ul>
+                                    <li>
+                                        <a href="@String.Format("{0}_Diagnostics.html", project.Project.AssemblyName)" style="margin-left: 10px">Diagnostics</a>
+                                    </li>
+                                </ul>
+                            }
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="col-md-9">
+            @foreach (var namedTypeSymbol in @Model.NamespaceModel.NamedTypes)
+            {
+                var writeNamedTypeSymbol = false;
+
+                var writeClass = false;
+
+                <fieldset>
+                    <legend>
+                        @String.Format("{0} ({1} constructor references)", namedTypeSymbol.Name, namedTypeSymbol.InstanceConstructorReferencesCount)
+                    </legend>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="width: 300px;">Type</th>
+                            <th style="width: 120px;">Accessibility</th>
+                            <th s>Name</th>
+                            <th>ReferenceLocations</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var member in namedTypeSymbol.Symbols)
+                        {
+                            <tr class="@GetCssRowClass(member)">
+                                <td style="width: 300px;">@member.TypeName</td>
+                                <td style="width: 120px;">@member.DeclaredAccessibility.ToString()</td>
+                                <td>@member.Name</td>
+                                <td>
+                                    @if (member.Diagnostics.Any())
+                                    {
+                                        foreach (var diagnostic in member.Diagnostics)
+                                        {
+                                            <b>@diagnostic</b>
+                                            <br/>
+                                        }
+                                    }
+                                    <span>@String.Format("{0} references:", member.ReferencesCount)</span>
+                                    <ul>
+                                        @foreach (var location in member.ReferenceLocations)
+                                        {
+                                            <li>@String.Format("{0}", location.FilePath.Replace(Model.BasePath + "\\", String.Empty))</li>
+                                        }
+                                    </ul>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+
+                    </table>
+                </fieldset>
+            }
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+@helper GetCssRowClass(SymbolModel symbolModel)
+{
+    if (symbolModel.ShouldHaveReferences && !symbolModel.ReferenceLocations.Any())
+    {
+        <text>danger</text>
+    }
+    else if (!symbolModel.ShouldHaveReferences && symbolModel.ReferenceLocations.Any())
+    {
+        <text>danger</text>
+    }
+}

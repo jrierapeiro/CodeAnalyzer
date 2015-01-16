@@ -1,0 +1,53 @@
+﻿@using System
+@model CodeAnalyzer.Reports.Models.IndexReportModel
+
+
+<html>
+<head>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+    <title>
+        @Model.SolutionFile
+    </title>
+</head>
+<body class="container">
+
+<div class="page-header">
+    <h1>
+        Index for @Model.SolutionFile
+    </h1>
+</div>
+<ul>
+    @foreach (var project in Model.Projects)
+    {
+        if (project.ReferencesReport.IsEmpty)
+        {
+            if (project.Diagnostics.Any())
+            {
+                <li>
+                    @project.Project.AssemblyName
+                    <ul>
+                        <li>
+                            <a href="@String.Format("{0}_Diagnostics.html", project.Project.AssemblyName)" style="margin-left: 10px">Diagnostics</a>
+                        </li>
+                    </ul>
+                </li>
+            }
+        }
+        else
+        {
+            <li>
+                <a href="@String.Format("{0}_Report.html", project.Project.AssemblyName)">@project.Project.AssemblyName</a>
+                @if (project.Diagnostics.Any())
+                {
+                    <ul>
+                        <li>
+                            <a href="@String.Format("{0}_Diagnostics.html", project.Project.AssemblyName)" style="margin-left: 10px">Diagnostics</a>
+                        </li>
+                    </ul>
+                }
+            </li>
+        }
+    }
+</ul>
+</body>
+</html>
