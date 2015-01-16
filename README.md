@@ -12,6 +12,10 @@ CodeAnalyzer has been written using some of the new C# features (write the code)
 
 https://twitter.com/jriera.
 
-How do I get set up?    http://www.visualstudio.com/en-us/downloads/visual-studio-2015-downloads-vs
-Based on Roslyn: https://roslyn.codeplex.com/   https://www.nuget.org/profiles/RoslynTeam
+How do I get set up?    
+http://www.visualstudio.com/en-us/downloads/visual-studio-2015-downloads-vs
+
+Based on Roslyn: 
+https://roslyn.codeplex.com/   
+https://www.nuget.org/profiles/RoslynTeam
   
